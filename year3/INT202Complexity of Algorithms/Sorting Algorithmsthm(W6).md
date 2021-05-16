@@ -1,2 +1,0 @@
-# Sorting Algorithmsthm(W6)
-
