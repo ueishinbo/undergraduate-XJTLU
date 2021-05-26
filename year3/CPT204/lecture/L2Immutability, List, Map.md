@@ -40,6 +40,62 @@ Integer division.
 
 浮点类型（例如双精度类型）具有一些不是实数的特殊值：NaN（代表“非数字”），
 
+### 例题
+
+* in the buggy java code below, is the bug caught by static checking, dynamic checking, or not at all?
+
+```java
+int bigNum = 200000;
+bigNum = bigNum * bigNum;
+```
+
+我开始想的是dynamic check，但是其实是no checking因为这个计算结果值超出了int的范围，所以他会悄悄的修改值。
+
+* In the buggy java code below, is the bug caught by satic checking, dynamic checking,or no checking?
+
+```java
+double prob = 1/ 5;
+```
+
+我开始想的是static checking ，但是又想错了.... 记住吧... 答案是no checking
+
+* In the buggy java code below, is the bug caught by satic checking, dynamic checking,or no checking?
+
+```java
+int sum = 0;
+int n = 0;
+int average = sum / n;
+```
+
+答案是 dynamic checking
+
+**但是！** 不要跟下面这个搞混，下面这个可是no checking
+
+```java
+double sum = 7;
+double n = 0;
+double average = sum / n;
+```
+
+<mark>但是如果把double改写为int的话就成了dymaic checking了..</mark> 
+
+* give a code:
+
+```
+			 List<Integer> list1 = new ArrayList<>();
+        list1.add(100);
+        list1.add(200);
+        final List<Integer> list2 = list1;
+        list1.add(300);
+        list2.set(3,400); //有问题
+        System.out.println(list1.toString());
+        System.out.println(list2.toString());
+```
+
+where will be an error, detected by dynamic checking
+
+因为不管你怎么搞，数组不能越界哇，你只add了三次，现在index只有2，可是你却用set(3,xx)所以会报indexOutOfBoundException()
+
 ## Public and Static 
 
 public 意味着在任何program的任何地方你都可以去调用此方法。
