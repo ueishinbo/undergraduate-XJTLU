@@ -18,10 +18,10 @@ Always start from design but sometimes start with evaluation(maybe first figure 
 
 
 
-* reasons for going over bugget(预算)
+* reasons for going over budget(预算)
   * User-requested changes.
   * overlooked tasks.
-  * users did not understand thrir own requirements.
+  * users did not understand their own requirements.
   * insufficient user-developer communication and understanding.
 
 ## Task-Centered Design
