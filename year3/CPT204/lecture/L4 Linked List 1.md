@@ -1,5 +1,43 @@
 # L4 **Linked List 1**
 
+## test
+
+### **Regression Testing** 
+
+回归测试是指修改了旧代码后，重新进行测试以确认修改没有引入新的错误或导致其他代码产生错误。自动回归测试将大幅降低系统测试、维护升级等阶段的成本
+
+### **Automated Testing**
+
+​	意思就是自动检查他们的结果， Junit 就是一种好的自动检查工具
+
+### **Coverage**
+
+- There are three common kinds of coverage:
+
+  - **Statement coverage**: is every statement run by some test case?
+
+  - **Branch coverage**: for every if or while statement in the program, are both the
+
+    true and the false direction taken by some test case?
+
+  - **Path coverage**: is every possible combination of branches — every path through
+
+    the program — taken by some test case?
+
+### Black-box and white-box testing
+
+黑盒测试就是从用户角度来进行测试，就测试功能
+
+白盒测试就是检查软件内部结构，对软件中的逻辑进行覆盖测试。
+
+### 题目
+
+Which of these techniques are useful for choosing test cases in test-first programming,**before** any code is written:
+
+Partitioning,✅ Boundaries,✅ Balck box,✅ Regression, Coverage, White box, Integeration
+
+
+
 想清楚递归和迭代的区别，一定要想清楚base case和recursive step，想清楚出口条件
 
 比如：

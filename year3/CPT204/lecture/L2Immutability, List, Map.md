@@ -1,5 +1,11 @@
 # Immutability, List, Map
 
+类型分为 primitive types（基本类型） 和  object type
+
+value分为：immutable values 和 immutable references 
+
+
+
 ## checking 
 
 1. Static checking: the bug is found automatically before the program even runs
@@ -108,6 +114,7 @@ static 意味着只有在本类中可以调用。
 
 ```
 /**
+* 对于方法功能的描述
 *@param n 
 *@return 
 */
@@ -130,6 +137,8 @@ Describe the return value with @return， if user follow teh assumptions.
 ## Java Collections and List
 
 ## Snapshot Diagrams
+
+
 
 可以用来描述程序运行时的内部状态。
 
@@ -188,6 +197,35 @@ Those two napspshot diagrams look **very different**, which is good: the differe
 
 <img src="https://i.loli.net/2021/05/17/f6Jne3xN8hWQDbC.png" alt="WX20210517-155250@2x.png" style="zoom:33%;" />
 
+### **Reassigning Variables vs Mutating Values (1)**
+
+reassigning variables 就是比如你定义了一个变量 int a  = 3; a = 3* a; 这种就是reassigning variables
+
+Mutating values 指的就是里斯数组一样的
+
+```
+list<Integer> list = new ArrayList<>();
+list.add(3);
+list.add(5);
+list.set(0,9);
+```
+
+set这个操作就是**mutating** 
+
+<img src="https://i.loli.net/2021/06/02/HSQKBqomDRubak3.png" alt="WX20210602-150840@2x.png" style="zoom:30%;" />
+
+但是呢还有一种**immutalble value**. 比如Stirng
+
+例如现在有一个String s = "a"; s = s + "b"; 这种呢就是immutalble value 
+
+<img src="https://i.loli.net/2021/06/02/XOQKSH1nIcrxpEe.png" alt="WX20210602-151225@2x.png" style="zoom:33%;" />
+
+这种被双椭圆包裹的就是属于immutable value
+
+<mark>但是有例外！StringBuilder是一种可变变量</mark>
+
+
+
 ## Immutable Referneces
 
 * Java also gives aus **immutable references** variables that are assigned once and never reassigned. To make a reference immutable, declare it with the key word final:
@@ -195,6 +233,8 @@ Those two napspshot diagrams look **very different**, which is good: the differe
 ```java
 final int n = 5;
 ```
+
+
 
 * if the java compiler isn't convinced that your final variable will only be assigned once at runtime, then it will produce a compiler error. So final gives you static checking for immutable references.
 * In a snapshot diagram, an immutable reference(final) is denoted by a double arrow. Here's an object whose id never changes(it can't be reassigned to a different number), but whose age can change

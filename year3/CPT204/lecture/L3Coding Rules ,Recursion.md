@@ -1,5 +1,7 @@
 # W(3) **Coding Rules** ,**Recursion**
 
+**Partition the Input Space** is the way 
+
 ## **Don't Repeat Yourself**
 
 就是不要在两个地方写一模一样的代码，如果发生了bug，你就得改两次，但是呢，有时你会忘记到底第二处在哪，所以有两处用到的话，那就把它抽象成一个方法～
