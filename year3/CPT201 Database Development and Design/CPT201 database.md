@@ -129,7 +129,7 @@ non-candidate key：如果索引文件的索引字段不是重复的那么主文
 
 Non-leaf节点的分裂跟leaf节点分裂不太一样：
 
-先把这个满的节点再加上从子节点提上来的节点合并一下，然后用公式计算出要分裂的点，也就是**⌈(n+1) / 2⌉**,然后再把这个节点继续往上套，跟递归一样
+先把这个满的节点再加上从子节点提上来的节点合并一下，然后用公式计算出要分裂的点，也就是**⌈(2/n⌉**,然后再把这个节点继续往上套，跟递归一样
 
 non-leaf节点分裂跟leaf节点分裂有点不一样：就比如接着用上面这个图片来举例说明，此时你想插入"Lamport"，先找到。。。结果如下图
 
@@ -257,15 +257,43 @@ r÷s：<img src="/Users/shinbouei/Library/Application Support/typora-user-images
 
 也就是一个一个扫描
 
+* liner scan: cost : 1 seek B<sub>r</sub> transfer
+  * r如果发现一个key attribute 就停止的话：Average cost = (b<sub>r</sub> /2) block transfers + 1 seek
+* Binary scan : seek 和 transfer 都是⎡2b<sub>r</sub>⎤* (t<sub>T</sub> + t<sub>S</sub>) 
+
 #### **Index scan** – search algorithms that use an index
 
  selection condition must be on search-key of index.
 
-比如b+树索引和hash索引
+##### primary index 
 
+candidate key：transfer和 seek都是一样的
 
+* 例如B+tree :(h<sub>i</sub> +1)* (t<sub>T</sub> + t<sub>S</sub>)  ps.hi是树的高度且发现的是单一节点
 
-#### Algorithm for Selection Operation (File scan: *linear search*)
+Non-candidate key: h<sub>i</sub> *(t<sub>T</sub> +t<sub>S</sub>)+t<sub>S</sub> +t<sub>T</sub> *b ps.  Let b = number of blocks containing matching records
+
+##### secondary index
+
+一条记录：(h<sub>i</sub> +1)* (t<sub>T</sub> + t<sub>S</sub>)   
+
+多条记录(h<sub>i</sub> +n)* (t<sub>T</sub> + t<sub>S</sub>)  
+
+ ### 排序
+
+  relation是否能放进内存：
+
+* 能：1次扫描搜索+ b<sub>r</sub>块传输
+
+* 不能：external sort merge:
+
+  * Let *M* denote the number of blocks in the main memory buffer available for sorting, that is, the number of disk blocks whose contents can be buffered in available main memory.
+
+    transfer: b<sub>r</sub>(2⌈log<sub>⌊*M*∕b<sub>b</sub>⌋−1</sub>(b<sub>r</sub>∕M)⌉ + 1) 
+
+    Seek:2⌈b<sub>r</sub>∕M⌉ + ⌈b<sub>r</sub>∕b<sub>b</sub>⌉(2⌈log<sub>⌊M∕b<sub>b</sub>⌋−1</sub>(b<sub>r</sub>∕M)⌉ − 1)
+
+#### Algorithm for Selection Operation (File scan: *l inear search*)
 
 * Scan each file block and test all records to see whether they satisfy the selection condition.
 
@@ -291,7 +319,7 @@ r÷s：<img src="/Users/shinbouei/Library/Application Support/typora-user-images
 
 * Retrieve a single record that satisfies the corresponding equality condition
   * **Cost=(h<sub>i</sub> +1)*(t<sub>T</sub> +t<sub>S</sub>) **
-* 要记得b+树index的高度最高是**⎡log<sub>⎡n/2⎤</sub>(K)⎤** :其中n是节点的指针数量，k是节点的search key数量
+* 要记得b+树index的高度最高是**⎡log<sub>⎡n/2⎤</sub>(K)⎤** :其中n是节点的指针数量，k是的search key数量
   * 例如：一个关系r有1000000个不同的search key，并且每个节点有100个index entry 所以h<sub>i</sub> = 4
 * Retrieve possibly <mark>multiple</mark> records （检索多个记录）：
   * Records will be on consecutive blocks
@@ -355,32 +383,9 @@ r÷s：<img src="/Users/shinbouei/Library/Application Support/typora-user-images
 * Merge-join
 * Hash-join
 
-
-
-<img src="/Users/shinbouei/Library/Application Support/typora-user-images/image-20210720031702239.png" alt="image-20210720031702239" style="zoom:50%;" />
-
-* Number of records of customer: 10,000
-* Number of blocks of customer: 400
-* Number of records of depositor: 5,000
-* Number of blocks of depositor: 100
-
 ### Nested-Loop Join
 
 The simplest join algorithms, that can be used independently of everything (like the linear search for selection)
-
-> To compute the theta join: r ⋈ s：
->
-> **for each**tupletr **in**r**dobegin**
->
-> ​	**for each tuple** ts **in** s **do begin**
->
->  		test pair (tr,ts) to see if they satisfy the join condition θ 
->
-> ​		 if they do, add tr • ts to the result.
->
-> ​	**end **
->
-> **end**
 
 <mark>r is called the **outer relation** and s the **inner relation** of the join.</mark>
 
@@ -389,28 +394,16 @@ The simplest join algorithms, that can be used independently of everything (like
 * 最坏的情况下， if there is enough memory only to hold one block of each relation,n<sub>r</sub> 是relation r的tuples数目。所以estimate的花费是：
   * <mark>n<sub>r</sub> * b<sub>s</sub> + b<sub>r</sub> block transfers, plus n<sub>r</sub> + b<sub>r</sub> seeks</mark>
 
-* If the smaller relation fits entirely in memory, use that as the inner relation.(最好情况)
+* If the 任意  relation fits entirely in memory, use that as the inner relation.(最好情况)
   * <mark>Reduces cost to b<sub>r</sub> + b<sub>s</sub> block transfers and 2 seeks</mark>
 
-* <mark>通常来说，选取选取**较小**的关系作为**outer**的关系。</mark>
+* <mark>通常来说，选取选取**block较小**的关系作为**outer**的关系。</mark>
 * 所以说，选择inner和outer取决于每个relation关系的szie
-
-#### Nested-Loop Join cost example 
-
-Assuming worst case memory availability cost estimate is
-
-* 让depositor作为outer relation：
-  * 5,000 * 400 + 100 = 2,000,100 block transfers
-  * 5,000 + 100 = 5,100 seeks
-
-* 让customer作为outer relation
-  * 10,000 * 100 + 400 = 1,000,400  block transfers
-  * and 10,400 seeks
 
 ### Block nested-loop join
 
 * 最坏情况：<mark>b<sub>r </sub>* b<sub>s</sub> + b<sub>r</sub> block transfers and  2 * b<sub>r</sub> seeks</mark> 
-  * Each block in the inner relation s is read once for each block in the outer relation (instead of once for each tuple in the outer relation).
+  * Ea ch block in the inner relation s is read once for each block in the outer relation (instead of once for each tuple in the outer relation).
 
 最好情况(when smaller relation fits into memory)：<mark>b<sub>r</sub> + b<sub>s</sub> block transfers plus 2 seeks.</mark>
 
@@ -422,9 +415,9 @@ Assuming worst case memory availability cost estimate is
 
 * Cost of the join: <mark>b<sub>r</sub> + n<sub>r</sub> * c </mark>block transfers and seeks
 
-  * Where c is the cost of traversing index and fetching all matching s (c也就是树的高度)
+  * Where c is the cost of traversing index and fetching all matching s (c是查询消耗)
 
-    tuples for one tuple in r
+     tuples for one tuple in r
 
   * **c** can be estimated as cost of a single selection on s using the join condition (usually quite low, when compared to the join)
 
@@ -455,7 +448,7 @@ merge sort 和 merge sort join不一样
 
 Let *M* denote the number of blocks in the main memory buffer available for sorting, that is, the number of disk blocks whose contents can be buffered in available main memory.
 
-transfer: 书上：b<sub>r</sub>(2⌈log<sub>⌊*M*∕b<sub>b</sub>⌋−1</sub>(b<sub>r</sub>∕M)⌉ + 1) ttl：b<sub>r</sub>(2⌈log<sub>M-1</sub>(b<sub>r</sub>∕M)⌉ + 1)
+transfer: b<sub>r</sub>(2⌈log<sub>⌊*M*∕b<sub>b</sub>⌋−1</sub>(b<sub>r</sub>∕M)⌉ + 1) 
 
 Seek:2⌈b<sub>r</sub>∕M⌉ + ⌈b<sub>r</sub>∕b<sub>b</sub>⌉(2⌈log<sub>⌊M∕b<sub>b</sub>⌋−1</sub>(b<sub>r</sub>∕M)⌉ − 1)
 
@@ -467,11 +460,14 @@ Seek:2⌈b<sub>r</sub>∕M⌉ + ⌈b<sub>r</sub>∕b<sub>b</sub>⌉(2⌈log<sub>
 
 * A hash function h is used to partition tuples of both relations
 
-*  The cost of hash join is
+* The cost of hash join is
 
   3(b<sub>r</sub> + b<sub>s</sub>) + 4 * n<sub>h</sub> block transfers, and
 
   2(⎡b<sub>r</sub>/b<sub>b</sub>⎤+⎡b<sub>s</sub>/b<sub>b</sub>⎤)+2*n<sub>h</sub> seeks
+
+  * n<sub>h</sub>是partition的块数
+  * b<sub>b</sub>是缓冲区的块数
 
 * If the entire build input can be kept in main memory (then no partitioning is required), **Cost estimate goes down to br + bs and 2 seeks.**
 
@@ -483,7 +479,38 @@ Seek:2⌈b<sub>r</sub>∕M⌉ + ⌈b<sub>r</sub>∕b<sub>b</sub>⌉(2⌈log<sub>
 
 V（A,r）：关系r中属性A中出现非重复值的个数，如果A是关系r上的主码则V(A,r)等于nr
 
+物化：中间操作需要写回磁盘
 
+* pipeline：不需要写回
+  * hash join sort不能用pipeline
+  * 只有nested looped join 和排好序的Merge join 可以用
+
+如何把图转换为表达式
+
+### 优化策略：
+
+#### 选择优先
+
+### estimation size
+
+目录信息：
+
+* n<sub>r</sub>:关系r的tuple个数
+* b<sub>r</sub>关系r的磁盘块树
+* f<sub>r</sub>一个磁盘块能装r中tuple的个数
+* v(A,R):r关系中A属性非重复的个数
+
+* b<sub>r</sub> = ⌈n<sub>r</sub>/f<sub>r</sub>⌉
+
+##### selection estimation size
+
+1. 等值比较：σ<sub>A</sub> = V(r)
+   1. 均匀分布：n<sub>r</sub> / V(A,r). ==> V(A,r) * 重复次数 = n<sub>r</sub>   ps.针对非primary key
+2. 非等值比较：寻找σ<sub>A</sub> <= V(r)  寻找V<sub>(r)</sub> < min
+
+##### join R<sub>1</sub>⋈R<sub>2</sub> 
+
+* r ∩ s = 空 
 
 ## Week5b **Query** Optimisation 2
 
@@ -500,15 +527,100 @@ V（A,r）：关系r中属性A中出现非重复值的个数，如果A是关系r
 
 <img src="/Users/shinbouei/Downloads/IMG_0015.jpg" alt="IMG_0015" style="zoom:30%;" />
 
+## **Lecture 6a:** **Transaction Management – Concepts of Transaction**
+
+* A <mark>transaction</mark> is a unit of program execution that accesses and possibly updates various data items.
+  * A transaction must see a consistent database.
+  * During transaction execution the database may betemporarily inconsistent.
+  * When the transaction completes successfully (is committed), the database must be consistent.
+  *  After a transaction commits, the changes it has made to the database persist, even if there are system failures.
+
+* Two main issues to deal with:
+  * Concurrent execution of multiple transactions
+  * Recovery from failures of various kinds, such as hardware failures and system crashes
+
+* 原子性：Either all operations of the transaction are properly reflected in the database or none are.
+* 一致性：Execution of a transaction in isolation preserves the consistency of the database.  
+* 隔离型：Although multiple transactions may execute concurrently, each transaction must be unaware of other concurrently executing transactions. Intermediate transaction results must be hidden from other concurrently executed transactions.
+  * 
+* 持久性：After a transaction completes successfully, the changes it has made to the database persist, even if there are system failures.
+
+### 事务的状态
+
+* active：
+
+## **Lecture 6c:** **Transaction Management – Failure Recovery**
+
+* Failure Classification
+*  Storage Structure
+*  Recovery and Atomicity n  Log-Based Recovery
+
+### Failure Classification
+
+#### **Transaction failure**:
+
+某个事物在运行过程中由于种种原因未运行至正常终点就夭折了
+
+* **Logical errors**: transaction cannot complete due to some internal error condition
+  * 业务规则要求终止，就比如余额不足，就得必须终止
+
+* **System errors**: the database system must terminate an active transaction due to an error condition (e.g., deadlock)
+
+ 恢复技术：undo 和rollback
+
+#### **System crash**: a power failure or other hardware or software failure causes the system to crash.
+
+ 恢复技术：
+
+1. 清除尚未完成的事物对数据库的所有修改
+   1. 系统重新启动以后，需要强行撤销(undo)所有未完成的事物
+2. 将缓冲区中已完成的事物的提交结果写入数据库
+   1. 系统重新启动后，需要重做(redo)所有已提交的事物
+
+#### **Disk failure**: a head crash or similar disk failure destroys all or part of disk storage
+
+恢复技术：更换或自动切换磁盘介质
+
+恢复策略：
+
+* 第一步： 创建redolist和undolist
+  * 正向扫描：每读到一个事物的开始记录就将该事物加入到undo队列，每读到一个事物的结束，就将该事物从undo队列移除，如果结束标记是commit，就将该事物加入到redo队列，当扫描完日志文件之后undo队列记录了所有未完成的事物，redo队列记录了所有已成功提交的事物。
+* 第二步撤销undo队列中的事物对数据库所造成的修改
+  * 从日志结尾开始反向扫描即每读一个日志记录，指针反向移动一条记录，对undo队列中的每个操作做逆操作，如果修改前的记录为空，则执行delete语句，删除被插入的对象，如果修改后的值为空，则执行insert插入被删除的对象，如果修改前后值都有，则吧修改后的值改完修改前的值，如果读到了开始，则 将其从undo队列移除。重复以上操作，直到undo队列为空
+* 第三步：重做redo列表中的事物
+  * 从日志头开始正向扫描文件，  知道日志文件结束，或者redo列表为空。如果读到了commit标记
 
 
 
+#### 具有检查点checkpoint的恢复技术
 
+ ### 并发操作带来的数据不一致性
 
+#### 丢失更新
 
+两个以上的事物从数据库中读入同一数据并修改，其中一个事物（后提交的事物）的提交结果破坏了另一个事物（先提交的事物）的提交结果，导致先提交的事物对DB的修改丢失。（买机票）
 
+<img src="/Users/shinbouei/Library/Application Support/typora-user-images/image-20210726192926670.png" alt="image-20210726192926670" style="zoom:50%;" />
 
+#### 读脏数据
 
+事物1修改某一数据，并将其写回磁盘，事物2读取同一数据后，事物1由于某种原因被撤销，这时事物1已修改过的数据被恢复初始值。但是事物2读到的还是修改后的数据，是不正确的数据。
+
+<img src="/Users/shinbouei/Library/Application Support/typora-user-images/image-20210726193426956.png" alt="image-20210726193426956" style="zoom:50%;" />
+
+#### 不可重复读
+
+事物1读取数据后，事物2执行更新操作，使事物1无法再显现前一次读取操作，三种情况。
+
+* 事物2修改了事物1所读数据，当事物1再次读取数据的时候，得到与前一次不同的值。
+* 事物2删除了部分记录，当事物1再次读取该数据的时候，发现某些数据消失
+* 事物2插入了一些记录，当事物1再次按相同条件读取数据时，发现多了一条记录 
+
+### 封锁
+
+排他锁-- X锁
+
+* 又称为写锁
 
 
 
