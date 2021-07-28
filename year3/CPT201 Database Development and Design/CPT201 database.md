@@ -545,6 +545,52 @@ V（A,r）：关系r中属性A中出现非重复值的个数，如果A是关系r
   * 
 * 持久性：After a transaction completes successfully, the changes it has made to the database persist, even if there are system failures.
 
+### Schedule调度
+
+执行在系统中的执行的时间顺序
+
+Serialisability 可串行化
+
+### Conflicting
+
+#### conflict can be identified 
+
+* Write-read(WR) conflict: reading uncommintted data 读到了未提交的数据
+* Read-write(RW) confilct: unrepeatable read 不可重复读
+* Write-write(WW) conflict: overwriting uncommitted data 覆盖未提交数据
+
+### Serialisability 可串行性
+
+就是两个事物互补干扰的样子
+
+<img src="/Users/shinbouei/Library/Application Support/typora-user-images/截屏2021-07-28 01.10.35.png" alt="截屏2021-07-28 01.10.35" style="zoom:50%;" />
+
+#### Conflict Serialisability 冲突可串行
+
+<img src="/Users/shinbouei/Library/Application Support/typora-user-images/截屏2021-07-28 01.11.57.png" alt="截屏2021-07-28 01.11.57" style="zoom:50%;" />
+
+### Precedence graph优先图
+
+如果事物T1和事物T2，下图表示T1比T2先访问一个数据，所以就有T1-->T2,再T2访问数据T1访问数据就有T2-->T1，一旦成环就表示它不是一个冲突可串行化调度
+
+<img src="/Users/shinbouei/Library/Application Support/typora-user-images/截屏2021-07-28 01.13.11.png" alt="截屏2021-07-28 01.13.11" style="zoom:50%;" />
+
+#### View Serialisability 视觉可串行化、
+
+如果俩调度满足以下三点，则它是视觉可串行化。
+
+* 对同一 data item， 只要是有一个 schedule读了它的初始值，另外一个 schedule 也必须读它的初始值。
+* 对同一data item,如果在一个 schedule 里，一个操作是读了一个写操作后的值，另一个 schedule 也必须读同样写操作后的值。
+* 对同一 data item,如果在一个 schedule 里最后进行了写操作，则另一个 schedule 也要在最后进行同样的写操作。
+
+如果三条规则都满足，才能认为两个 schedule 是视图等价的。
+
+冲突可串行化一定是一个视觉可串行化反过来不一定
+
+#### Recoverable Schedules
+
+
+
 ### 事务的状态
 
 * active：
@@ -620,7 +666,50 @@ V（A,r）：关系r中属性A中出现非重复值的个数，如果A是关系r
 
 排他锁-- X锁
 
-* 又称为写锁
+* 又称为写锁,若事物T对数据对象A加上X锁，则只允许T读取和修改A，其他任何事物都不能在对A加任何的锁，直到T释放A上的锁。
+
+共享锁--S锁
+
+* 又称为读锁，若事物T对数据对象A加上S锁，则其他事物只能再对A加S锁，而不能加X锁，直到T释放A上的S锁
+
+#### 封锁协议
+
+在运用X锁和S锁对数据对象进行加锁时，需要约定一些规则：封锁协议：Locking Protocol
+
+1. 什么时候申请X锁或S锁
+2. 持锁时间、何时释放
+
+不同锁封锁协议，在不同程度上为并发操作正确调度提供了一定的保证。不同级别的封锁协议达到的**系统一致性级别**是不同的
+
+常用的封锁协议：
+
+#### 一级封锁协议
+
+* 事物T在修改数据R之前必须先对其加入X锁，直到事物结束才释放
+* 1级封锁协议可防止丢失更新
+  * 在1级封锁协议中，如果只是读数据，是不需要加锁的，所以它不能保证可重复读和不可重复读“脏”数据
+
+#### 二级封锁协议
+
+* 1级封锁协议+事物T在读数据R前必须加S锁，读完后可以释放S锁
+
+* 二级封锁协议可以防止修改和读“脏数据”如下图
+
+  <img src="/Users/shinbouei/Library/Application Support/typora-user-images/截屏2021-07-27 00.20.36.png" alt="截屏2021-07-27 00.20.36" style="zoom:50%;" />
+
+* 在二级封锁协议中，由于读完数据后即可释放S锁，所以它不能保证可重复读，如下图
+
+<img src="/Users/shinbouei/Library/Application Support/typora-user-images/截屏2021-07-27 00.19.42.png" alt="截屏2021-07-27 00.19.42" style="zoom:50%;" />
+
+#### 三级封锁协议
+
+1级封锁协议+事物T在读取数据R前必须加S锁，直到 事物结束时才释放
+
+三级封锁协议可以防止丢失修改，读“脏“数据以及不可重复读数据。
+
+<img src="/Users/shinbouei/Library/Application Support/typora-user-images/截屏2021-07-27 00.27.51.png" alt="截屏2021-07-27 00.27.51" style="zoom:50%;" />
+
+
 
 
 
