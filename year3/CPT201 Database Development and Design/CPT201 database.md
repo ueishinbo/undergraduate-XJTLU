@@ -259,7 +259,7 @@ r÷s：<img src="/Users/shinbouei/Library/Application Support/typora-user-images
 
 * liner scan: cost : 1 seek B<sub>r</sub> transfer
   * r如果发现一个key attribute 就停止的话：Average cost = (b<sub>r</sub> /2) block transfers + 1 seek
-* Binary scan : seek 和 transfer 都是⎡2b<sub>r</sub>⎤* (t<sub>T</sub> + t<sub>S</sub>) 
+* Binary scan : seek 和 transfer 都是⎡log<sub>2</sub>b<sub>r</sub>⎤* (t<sub>T</sub> + t<sub>S</sub>) 
 
 #### **Index scan** – search algorithms that use an index
 
@@ -403,7 +403,7 @@ The simplest join algorithms, that can be used independently of everything (like
 ### Block nested-loop join
 
 * 最坏情况：<mark>b<sub>r </sub>* b<sub>s</sub> + b<sub>r</sub> block transfers and  2 * b<sub>r</sub> seeks</mark> 
-  * Ea ch block in the inner relation s is read once for each block in the outer relation (instead of once for each tuple in the outer relation).
+  * Each block in the inner relation s is read once for each block in the outer relation (instead of once for each tuple in the outer relation).
 
 最好情况(when smaller relation fits into memory)：<mark>b<sub>r</sub> + b<sub>s</sub> block transfers plus 2 seeks.</mark>
 
@@ -421,11 +421,9 @@ The simplest join algorithms, that can be used independently of everything (like
 
   * **c** can be estimated as cost of a single selection on s using the join condition (usually quite low, when compared to the join)
 
-* <mark>如果两个关系上都有索引的话，一般把tuple较小的作为外层关系</mark>
+* <mark>一般是有索引的作为内层，如果两个关系上都有索引的话，一般把tuple较小的作为外层关系</mark>
 
 * 连接时间代价是：<mark>b<sub>r</sub>(t<sub>T</sub> + t<sub>S</sub>) + n<sub>r</sub> * c</mark>
-
-一般情况下是内层循环有索引
 
 #### Example of Indexed Nested- Loop Join Costs
 
@@ -440,7 +438,8 @@ Compute depositor ⋈ customer, with **depositor** as the **outer** relation.
 
 * 只可以在等值连接和自然链接中
 * merge join的花费是(B<sub>b</sub>是blocks是每个关系中分配在内存中的block数)：b<sub>r</sub> + b<sub>s</sub> block transfers +⎡b<sub>r</sub>/b<sub>b</sub>⎤+⎡b<sub>s</sub>/b<sub>b</sub>⎤ seeks
-* <mark>如果这个关系没排序还得加上排序的花销</mark>
+* <mark>如果这个关系没排序还得加上排序的花销，要加上两次transfer和seek</mark>
+  * 比如现在俩关系都没排序，所以先算merge sort的transfer和seek，再加上两次的join的transfer和seek
 
 #### merge sort
 
@@ -466,7 +465,7 @@ Seek:2⌈b<sub>r</sub>∕M⌉ + ⌈b<sub>r</sub>∕b<sub>b</sub>⌉(2⌈log<sub>
 
   2(⎡b<sub>r</sub>/b<sub>b</sub>⎤+⎡b<sub>s</sub>/b<sub>b</sub>⎤)+2*n<sub>h</sub> seeks
 
-  * n<sub>h</sub>是partition的块数
+  * n<sub>h</sub>是partition<mark>当题目出现了partition就说明是hashjoin</mark>的块数
   * b<sub>b</sub>是缓冲区的块数
 
 * If the entire build input can be kept in main memory (then no partitioning is required), **Cost estimate goes down to br + bs and 2 seeks.**
@@ -475,7 +474,7 @@ Seek:2⌈b<sub>r</sub>∕M⌉ + ⌈b<sub>r</sub>∕b<sub>b</sub>⌉(2⌈log<sub>
 
 
 
-## Week5a **Query** **Optimisation 1**
+## Week5a **Query** **Optimisation 1** 1.40/3
 
 V（A,r）：关系r中属性A中出现非重复值的个数，如果A是关系r上的主码则V(A,r)等于nr
 
@@ -505,12 +504,22 @@ V（A,r）：关系r中属性A中出现非重复值的个数，如果A是关系r
 ##### selection estimation size
 
 1. 等值比较：σ<sub>A</sub> = V(r)
-   1. 均匀分布：n<sub>r</sub> / V(A,r). ==> V(A,r) * 重复次数 = n<sub>r</sub>   ps.针对非primary key
+   1. 均匀分布：n<sub>r</sub> / V(A,r). ==> V(A,r) ✖️ 重复次数 = n<sub>r</sub>   ps.针对非primary key
+   2. 如果是primary key 直接就是1
 2. 非等值比较：寻找σ<sub>A</sub> <= V(r)  寻找V<sub>(r)</sub> < min
+
+<img src="/Users/shinbouei/Library/Application Support/typora-user-images/截屏2021-07-31 01.58.12.png" alt="截屏2021-07-31 01.58.12" style="zoom:30%;" />
+
+<img src="/Users/shinbouei/Library/Application Support/typora-user-images/截屏2021-07-31 01.59.24.png" alt="截屏2021-07-31 01.59.24" style="zoom:30%;" />
+
+
+
+1. 
 
 ##### join R<sub>1</sub>⋈R<sub>2</sub> 
 
-* r ∩ s = 空 
+* r ∩ s = 空 （表示r 和s没有相交的属性）
+* r ∩ s = 非空 且r ∩ s = 
 
 ## Week5b **Query** Optimisation 2
 
@@ -571,7 +580,7 @@ Serialisability 可串行化
 
 ### Precedence graph优先图
 
-如果事物T1和事物T2，下图表示T1比T2先访问一个数据，所以就有T1-->T2,再T2访问数据T1访问数据就有T2-->T1，一旦成环就表示它不是一个冲突可串行化调度
+如果事物T1和事物T2，下图表示T1比T2先访问一个数据，所以就有T1-->T2,再T2访问数据T1访问数据就有T2-->T1，一旦成环就表示它不是一个冲突可串行化调度	
 
 <img src="/Users/shinbouei/Library/Application Support/typora-user-images/截屏2021-07-28 01.13.11.png" alt="截屏2021-07-28 01.13.11" style="zoom:50%;" />
 
@@ -593,13 +602,92 @@ Serialisability 可串行化
 
 ### 事务的状态
 
-* active：
+### Cascadeless Schedules 无*级联调度*	
+
+https://blog.csdn.net/u010486124/article/details/42426127
+
+## **Lecture 6b:** **Transaction Management – Concurrency Control** 
+
+排他锁-- X锁
+
+* 又称为写锁,若事物T对数据对象A加上X锁，则只允许T读取和修改A，其他任何事物都不能在对A加任何的锁，直到T释放A上的锁。
+
+共享锁--S锁
+
+* 又称为读锁，若事物T对数据对象A加上S锁，则其他事物只能再对A加S锁，而不能加X锁，直到T释放A上的S锁
+
+#### dead lock
+
+#### Two -Phase Locking Protocol 两段封锁协议
+
+对任何数据进行读写之前，事物首先要获得对该数据的封锁
+
+在释放一个封锁之后，事物不再获得其他封锁
+
+* 分为两个阶段
+  * 第一阶段是获得封锁，也称为扩展阶段
+  * 第二阶段是释放锁，也称为收缩阶段
+
+<img src="/Users/shinbouei/Library/Application Support/typora-user-images/截屏2021-07-29 00.40.30.png" alt="截屏2021-07-29 00.40.30" style="zoom:30%;" />
+
+事物2不符合两段锁协议，因为它在释放锁之后又陆续加了一堆锁
+
+#### 两段锁协议与防止死锁的一次封锁法
+
+* 一次封锁法要求每个事物必须一次将所有要使用的数据全部枷锁，否则就不能继续执行，因此一次封锁协法遵守两段封锁协议
+* 但是两段锁协议并不要求事物必须一次将所有要使用的数据全部枷锁，因此遵守两段锁协议的事物可能发生死锁比如下图
+
+<img src="/Users/shinbouei/Desktop/截屏2021-07-29 00.53.31.png" alt="截屏2021-07-29 00.53.31" style="zoom:40%;" />
+
+#### Deadlock Handing 死锁处理
+
+##### 死锁预防
+
+##### 死锁检测（一般都是这样）
+
+非抢占
+
+抢占
+
+T<sub>i</sub> -->T<sub>j</sub> 表示T<sub>i</sub>等待T<sub>j</sub>释放锁，如果成环，则表示发生死锁
+
+死锁恢复处理：
+
+* 选择一个victim去roll back
+* Roll back 
+  * total roll back
+  * Partial roll back
+* Starvatim:限制回滚制度
+
+
 
 ## **Lecture 6c:** **Transaction Management – Failure Recovery**
 
 * Failure Classification
 *  Storage Structure
 *  Recovery and Atomicity n  Log-Based Recovery
+
+### 可恢复的事物
+
+T <sub>j</sub> 读T<sub>i</sub>写的事物，那么T<sub>i</sub>需要在T<sub>j</sub>之前提交.
+
+T<sub>j</sub>在T<sub>i</sub>之前abort
+
+比如如下调度
+
+T1:write(X); T1:write(Y); T2:read(X); T2:write(Y); T2:abort; T1:write(Z); T1:commit; T3:read(Y); T3:write(Z); T3:commit.
+
+解：X：W<sub>1</sub> R<sub>2</sub>
+
+​		Y:W<sub>1</sub>W<sub>2</sub>R<sub>3</sub>
+
+​	    Z:W<sub>1</sub>W<sub>3</sub> 
+
+先看x，事物1先写，事物2后读，然后事物2abort了，所以x是可以恢复的
+
+在看y：事物2先写，事物3后读，但是呢写的后面就是abort，所以看事物1和事物3的关系，观察可知，事物1先commit，事物3后commit所以可以恢复
+
+再看z：俩写操作不考虑？
 
 ### Failure Classification
 
@@ -644,7 +732,7 @@ Serialisability 可串行化
 
 #### 丢失更新
 
-两个以上的事物从数据库中读入同一数据并修改，其中一个事物（后提交的事物）的提交结果破坏了另一个事物（先提交的事物）的提交结果，导致先提交的事物对DB的修改丢失。（买机票）
+两个以上的事物从数据库中读入同一数据并修改，其中一个事物（后提交的事物）的提交结果破坏了另一个事物（先提交的事物）的提交结果，导致先提交的事物对DB的修改丢失。（买机票） 
 
 <img src="/Users/shinbouei/Library/Application Support/typora-user-images/image-20210726192926670.png" alt="image-20210726192926670" style="zoom:50%;" />
 
