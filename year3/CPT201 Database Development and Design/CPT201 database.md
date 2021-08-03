@@ -803,7 +803,19 @@ T1:write(X); T1:write(Y); T2:read(X); T2:write(Y); T2:abort; T1:write(Z); T1:com
 
 
 
+## Week10 OODB
 
+## nosql
+
+support 和 confidence
+
+support ：共同发声的概率是
+
+confident： 条件发生的概率<img src="/Users/shinbouei/Library/Application Support/typora-user-images/image-20210803004836932.png" alt="image-20210803004836932" style="zoom:50%;" />
+
+4.40% 5.50%
+
+![image-20210803011841648](/Users/shinbouei/Library/Application Support/typora-user-images/image-20210803011841648.png)
 
 
 
