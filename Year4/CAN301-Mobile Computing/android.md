@@ -89,11 +89,16 @@ TextView中的gravity：设置当前Textview在手机中的位置（居中，还
 </selector>
 ```
 
+最后吧background的位置替换为
 
+```xml
+android:background="@drawable/btn_sellect"
+```
 
-
-
-
+* 实际上，可以把button看作3层
+  * 最底层是background
+  * 中间是text
+  * 最上面是foreground
 
 
 

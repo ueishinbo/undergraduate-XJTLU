@@ -14,3 +14,52 @@ Machine learning algorithms:
 <img src="https://i.loli.net/2021/09/16/pwCyWrxm4XJUZYj.png" alt="WX20210916-002342@2x.png" style="zoom:50%;" />
 
 如果你想预测一个得了肿瘤的人是恶性肿瘤还是良性肿瘤。这是一个分类问题，因为它的离散很小，只有良性和恶性之分（最多恶性再分为A型，B型）我们的目的就是为了预测离散的输出值
+
+## unsupervised learning:
+
+没有明确的目标。比如我将10万条新闻放入unsupervised learning algorithm 中他会自动吧这些新闻分成一些类。    
+
+## 模型描述
+
+<img src="https://i.loli.net/2021/09/20/SEqAyMLjmahu9cD.png" alt="WX20210920-223956.png" style="zoom:80%;" />
+
+m = Number of training examples
+
+x's = "input" variable / feature
+
+y's = "output" variable / "target" variable
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
