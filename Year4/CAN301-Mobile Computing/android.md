@@ -81,7 +81,7 @@ TextView中的gravity：设置当前Textview在手机中的位置（居中，还
 然后输入以下数据: 两个item一个是设置未点击时候的状态，一个是点击后的状态（根据state_pressed="true/false"来判断）
 
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version=" 1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/ic_baseline_account_balance_24" android:state_pressed="true"/>
     <item android:drawable="@drawable/ic_baseline_accessibility_24" android:state_pressed="false"/>
@@ -100,15 +100,62 @@ android:background="@drawable/btn_sellect"
   * 中间是text
   * 最上面是foreground
 
+-----
+
+* 第一步创建完项目以后点击activity_main进入xml
+
+<img src="https://i.loli.net/2021/09/29/RZpthq54sN9FlrL.png" alt="WX20210929-001429@2x.png" style="zoom:50%;" />
+
+* 第二步：先把xml文件改成如下所示
+
+<img src="https://i.loli.net/2021/09/29/EMmOCZFnwA3cKxT.png" alt="WX20210929-002706.png" style="zoom:50%;" />
 
 
 
+### 设置button点击按钮显示不同的状态
+
+**但此时Button点击没有任何反应，如果你想设置点击时候是一个状态，结束后又是一个状态,方法如下**
+
+* 第一步：先创建一个Drawable文件,（命名随意，root element 选择selest）
+
+<img src="https://i.loli.net/2021/10/06/IqB9s2aOwUiHdep.png" alt="WX20211006-110032@2x.png" style="zoom:50%;" />
+
+* 创建两个状态（也就是默认状态，和点击时候的状态）<img src="https://i.loli.net/2021/10/06/qbojJhvGSV6zaXW.png" alt="WX20211006-110540@2x.png" style="zoom:50%;" />
+  * 1是默认状态，2是点击状态。这个图片是导入进去的，导入方法如下
+  * <img src="https://i.loli.net/2021/10/06/l2OcMDXIsTftCE5.png" alt="WX20211006-111021@2x.png" style="zoom:33%;" />
+  * 选完图片以后一直点next就行了<img src="https://i.loli.net/2021/10/06/lyAavIibYQKh6mX.png" alt="WX20211006-111213@2x.png" style="zoom:33%;" />
+  * 然后把这两个名字写入到item里
+  * 最后再设置状态一个true(按下为true） 一个false<img src="https://i.loli.net/2021/10/06/vcP2HZJmk6MLYWj.png" alt="WX20211006-111719@2x.png" style="zoom:33%;" />
 
 
 
+最后一步：把main里面的background设置为刚才的drawable文件即可
 
+<img src="https://i.loli.net/2021/10/06/E9kNq8aojdv7IXi.png" alt="WX20211006-112137@2x.png" style="zoom:50%;" />
 
+### 设置button点击时候不同颜色
 
+颜色可以通过backgroundTint来设置，如果只设置一种颜色的话就永远是这个颜色，无论点击与否都一样，所以我们要写drawable的颜色选择器来控制它的颜色。
+
+<img src="https://i.loli.net/2021/10/06/BOcWApq16JoXZbi.png" alt="WX20211006-113217@2x.png" style="zoom:50%;" />
+
+* 第一步:创建一个颜色管理文件夹：<img src="https://i.loli.net/2021/10/06/BaKTlLdSzo2DRn7.png" alt="WX20211006-114327@2x.png" style="zoom:50%;" />
+
+然后写下默认是绿色按下是红色
+
+<img src="https://i.loli.net/2021/10/06/1oZOHdQXqTGkm36.png" alt="WX20211006-114628@2x.png" style="zoom:50%;" />
+
+最后一步把backgroundTint内容改为刚才的选择器
+
+<img src="https://i.loli.net/2021/10/06/h7MW6fosvrej2mU.png" alt="WX20211006-115119@2x.png" style="zoom:50%;" />
+
+### Button事件处理
+
+点击事件
+
+长按事件
+
+触摸事件
 
 
 
