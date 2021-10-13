@@ -157,6 +157,128 @@ android:background="@drawable/btn_sellect"
 
 触摸事件
 
+#### 第一步：
+
+新建一个id
+
+<img src="https://i.loli.net/2021/10/11/9WiH8FZcCMSOmAg.png" alt="WX20211011-142730@2x.png" style="zoom:50%;" />
+
+
+
+#### 第二步：
+
+切换到java代码并添加以下代码：
+
+![WX20211011-152403@2x.png](https://i.loli.net/2021/10/11/OY3L8ZJevEVlFBT.png)
+
+每个方法都有回调函数
+
+#### 第三步：调试
+
+![WX20211012-234441@2x.png](https://i.loli.net/2021/10/12/yxrlbcBe6L73Hj5.png)
+
+```java
+//点击事件
+btn.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        Log.e(TAG, "onclick: ");
+    }
+});
+
+//长按事件
+btn.setOnLongClickListener(new View.OnLongClickListener() {
+    @Override
+    public boolean onLongClick(View view) {
+        Log.e(TAG, "onLongClick");
+        return false;
+    }
+});
+
+//触摸事件
+ btn.setOnTouchListener(new View.OnTouchListener() {
+     @Override
+     public boolean onTouch(View view, MotionEvent motionEvent) {
+         Log.e(TAG, "onTouch");
+         return false;
+     }
+ });
+```
+
+也就是没个方法里加上Log.e()的方法。
+
+**当轻点button的时候会执行触摸事件和点击事件。先执行触摸事件再执行点击事件**
+
+**当长按button 的时候会执行上面全部事件，按住不动先执行长按事件，松手后执行触摸最后是点击事件**
+
+## EditText
+
+1. android:hint 输入提示
+2. android:textColorHint 输入提示文字的颜色
+3. android:inputType 输入类型
+4. android:drawableXxxx 在输入框的指定地方添加图片
+5. android:drawablePadding 设置图片与输入内容的间距
+6. android:paddingXxxx 设置内容与边框的间距
+7. android:backkground 背景色
+
+
+
+### 测试hint,textColorHint,inputType 
+
+测试前三个
+
+<img src="https://i.loli.net/2021/10/13/3VtfZsmbMrL6wao.png" alt="WX20211013-153745@2x.png" style="zoom:67%;" />
+
+<img src="https://i.loli.net/2021/10/13/xTcoWBupDK5dnYk.png" alt="WX20211013-153844@2x.png" style="zoom:50%;" />
+
+### 测试drawableXxxx，
+
+#### 第一步创建图片
+
+<img src="https://i.loli.net/2021/10/13/7pmsdafWjyDlMJX.png" alt="WX20211013-160011@2x.png" style="zoom:50%;" />
+
+
+
+然后选择一个图片，点next和finish完成。
+
+<img src="https://i.loli.net/2021/10/13/gVWS3I2xjOUs6Ff.png" alt="WX20211013-160219@2x.png" style="zoom:50%;" />
+
+### 测试android:drawablePadding 设置图片与输入内容的间距
+
+
+
+然后加上红框内的代码，双引号里面填写刚才添加图片的路径。就会在text旁边显示刚才的图片，如图中右侧红框所示。
+
+如果你觉的文字和图片之间太近了，可以加上如下红框内的代码可以增大间距。
+
+<img src="https://i.loli.net/2021/10/13/GlrFzTJHdVWMR4S.png" alt="WX20211013-161042@2x.png" style="zoom:50%;" />
+
+### android:paddingXxxx 设置内容与边框的间距
+
+如果你觉的整个文本框里屏幕左边太近了，你可以用paddingLeft来设置。右边将就paddingRight设置。
+
+### android:backkground 背景色
+
+<img src="https://i.loli.net/2021/10/13/hKwCRHjJyGoAXOp.png" alt="WX20211013-162454@2x.png" style="zoom:50%;" />
+
+这个黑色的线非常难看，所以你可以用background = white来清除这条线。
+
+### 通过button获取text值
+
+第一步先创建一个新的button,并给其加上id，再把一个textfield加上id
+
+<img src="https://i.loli.net/2021/10/13/QMSVp7R6rzksd1y.png" alt="WX20211013-163810@2x.png" style="zoom:30%;" />
+
+然后切换到java代码当中，  
+
+![WX20211013-203047@2x.png](https://i.loli.net/2021/10/13/Tz7suBKryMbtdAp.png)
+
+1:代表的是获取到button控件
+
+2:代表的是获取button控件
+
+3:代表的是打印出当点击按钮的时候，打印text的文本内容。
+
 
 
 
