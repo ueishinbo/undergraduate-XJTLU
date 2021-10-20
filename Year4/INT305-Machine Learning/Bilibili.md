@@ -1,4 +1,4 @@
-Machine learning algorithms:
+  Machine learning algorithms:
 
 - Supervised learning: the idea is taht we're going to teach the computer how to do something
 - Unsupervised learning: let it learn by itself.
@@ -52,7 +52,7 @@ Training Set
 
 ![WX20210924-215743@2x.png](https://i.loli.net/2021/09/24/xXFjG1OYR89PvZp.png)
 
-比如右边是原先的，我先把θ<sub>0</sub>设为0这样h<sub>θ</sub>(x) = θ<sub>1</sub>x了，相应的cost function也相应变简洁了。 
+比如左边是原先的，我先把θ<sub>0</sub>设为0这样h<sub>θ</sub>(x) = θ<sub>1</sub>x了，相应的cost function也相应变简洁了。 
 
 
 
@@ -98,7 +98,48 @@ Training Set
 
 ## Cost function 2
 
+## Gradient descent 梯度下降
 
+梯度下降是minimizing 代价函数的一种方法  
+
+### 例
+
+现在有一个函数  **J(θ<sub>0</sub>,θ<sub>1</sub>)** , 我们想最小化这个函数
+
+步骤
+
+1. 给θ<sub>0</sub>和θ<sub>1</sub>一个初始值，一般情况下把他们都initialize为0
+2. 不断的一点点改变θ<sub>0</sub>和θ<sub>1</sub>的值来使得  **J(θ<sub>0</sub>,θ<sub>1</sub>)** 变小直到我们找到最小值或者局部最小值
+
+<img src="https://i.loli.net/2021/10/19/sAtyp9l3LrRgTKI.png" alt="WX20211019-195101.png" style="zoom:50%;" />
+
+在上图中θ<sub>0</sub>和θ<sub>1</sub>在水平轴上， **J(θ<sub>0</sub>,θ<sub>1</sub>)**  在垂直轴上，图形表面的高度代表的是J的值，我们想吧J最小化。
+
+首先我们从θ<sub>0</sub>和θ<sub>1</sub>的某个值出发也就是赋一个初始值
+
+<img src="https://i.loli.net/2021/10/19/RqE8XLls1C7uTPS.png" alt="WX20211019-200634.png" style="zoom:50%;" />想象你现在站在最高处的点上，你现在要下山，你环绕四周你想着一条你觉得是最近的下山路径走了一步，然后再次环顾四周，再一次选择了你觉的是最近的下山路径。
+
+<img src="https://i.loli.net/2021/10/19/C1FBkafRVHYP7bN.png" alt="WX20211019-200937.png" style="zoom:50%;" />如果把起始点往右稍微移动一点，则会得到截然不同的结果。
+
+
+
+#### 梯度下降算法
+
+![WX20211019-202954.png](https://i.loli.net/2021/10/19/MEZdGnamSKv9PHC.png)
+
+在这个式子当中，**:=**代表的是赋值，α代表的是learning rate，也就是我们上面例子中下山的每一步子的大小，如果α很大的话，梯度下降就会变得很快，反之就会下降的很慢
+
+α后面的式子代表的是导数项。
+
+<img src="https://i.loli.net/2021/10/19/HEB19XpGTlLbvMZ.png" alt="WX20211019-204053.png" style="zoom:50%;" />
+
+上图为同步更新的操作方法。
+
+### 例子
+
+为了理解梯度下降的原理，我们用一个简单的例子，也就是代价函数只有一个参数
+
+现在，我们有一个关于实数θ<sub>1</sub>的 函数J（θ<sub>1</sub>属于实数），首先我们取任意一点作为θ<sub>1</sub>，我们的函数就从这个点出发
 
 
 
