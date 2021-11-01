@@ -279,7 +279,14 @@ btn.setOnLongClickListener(new View.OnLongClickListener() {
 
 3:代表的是打印出当点击按钮的时候，打印text的文本内容。
 
+## Imagewiew
 
+ ## ProgressBar
+
+1. andorid:max : 进度条最大值
+2. Android：progress： 进度条已完成进度
+3. android: indeterminateminate: 如果设置为true，则进度条不精确显示
+4. style："?android:attr/progressBartyleHorizontal" 水平进度条
 
 
 
