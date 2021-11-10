@@ -294,7 +294,9 @@ btn.setOnLongClickListener(new View.OnLongClickListener() {
 
 
 
+Glide: 一种图片加载技术，可以填写本地或者http端的图片。可以设置占位符，如果图片加载失败显示别的图片。可以设置加载动画效果。
 
+Okhttp和Retrofit 网络加载框架
 
 
 
